@@ -75,9 +75,9 @@ async def send_notification(config, merchant, stock, stock_quantity, message_id=
         # 动态生成库存状态信息，无论有货还是无货都嵌入链接
         stock_info = f"🛒 [库   存：{'有' if stock_quantity > 0 else '无'}]({stock['url']})"
 
-        # 生成优惠码信息，只显示年付优惠码
+        # 生成优惠码信息
         annual_coupon = f"🎁 优惠码：`{merchant['coupon_annual']}`" if merchant.get('coupon_annual') else ""
-        coupon_info = annual_coupon  # 只显示年付优惠码
+        coupon_info = annual_coupon  # 获取优惠码
         coupon_section = f"\n\n{coupon_info}\n\n" if coupon_info else "\n\n"
 
         # 如果库存无货，则给链接添加删除线
@@ -85,7 +85,7 @@ async def send_notification(config, merchant, stock, stock_quantity, message_id=
 
         # 构建最终消息
         message = (
-            f"{title}\n\n📜 配   置：{hardware_info}\n\nℹ️ {tag}{coupon_section}💰 价   格: {price}\n\n{stock_info}\n\n"
+            f"{title}\n\n💰 价   格: {price}\n\n📜 配   置：{hardware_info}\n\nℹ️ {tag}{coupon_section}{stock_info}\n\n"
             f"{buy_link}"
         )
 
