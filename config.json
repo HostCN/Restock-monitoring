@@ -1,5 +1,5 @@
 {
-    "telegram_token": "机器人api",
+    "telegram_token": "机器人API",
     "telegram_chat_id": "@hostzg_bbs",
     "merchants": [
         {
@@ -8,16 +8,33 @@
             "out_of_stock_text": "Out of Stock",
             "stock_urls": [
                 {
-                    "check_url": "https://bwh81.net/cart.php?a=add&pid=104", 
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=87", 
                     "buy_url": "https://bwh81.net/aff.php?aff=55580&pid=87",
                     "title": "搬瓦工 CN2 GIA-E $169.99",
                     "price": "$169.99 USD/年",
                     "hardware_info": "2核,1GB,20GB,1000GB/月,2.5Gbps,DC6 CN2 GIA-E"
                 }
             ],
-            "coupon_annual": "BWHCGLUKKB"
+            "coupon_annual": "BWHCGLUKKB",
+            "enabled": true
+        },
+        {
+            "name": "📦 DMIT",
+            "tag": "#DMIT - #示例商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://www.dmit.io/cart.php?a=add&pid=100", 
+                    "buy_url": "https://example.com/aff.php?aff=12345&pid=99",
+                    "title": "示例商品 $129.99",
+                    "price": "$129.99 USD/年",
+                    "hardware_info": "1核,512MB,10GB,500GB/月,1Gbps,DC2 示例数据"
+                }
+            ],
+            "coupon_annual": "EXAMPLEDISCOUNT",
+            "enabled": true
         }
     ],
-    "check_interval": 20,
+    "check_interval": 10,
     "cooldown_period": 0
 }
