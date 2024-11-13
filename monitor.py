@@ -149,9 +149,11 @@ async def check_all_stocks(config, merchants):
     """检查所有商家的库存"""
     tasks = []
     for merchant in merchants:
-        for stock in merchant['stock_urls']:
-            tasks.append(check_stock(stock, merchant['out_of_stock_text']))
-    return await asyncio.gather(*tasks)
+        if merchant['enabled']:  # 检查商家是否启用
+            for stock in merchant['stock_urls']:
+                tasks.append(check_stock(stock, merchant['out_of_stock_text']))
+    results = await asyncio.gather(*tasks)
+    return results  # 返回一个包含所有库存数量的列表
 
 async def main():
     """主函数"""
@@ -159,7 +161,7 @@ async def main():
 
     try:
         merchant_status = {}
-        message_ids = {}
+        message_ids = {}  # 保存每个商品的通知消息ID
 
         while True:
             config = await load_config()  # 加载配置
@@ -167,22 +169,28 @@ async def main():
 
             results = await check_all_stocks(config, config['merchants'])
 
-            for merchant, stock, stock_quantity in zip(config['merchants'], config['merchants'][0]['stock_urls'], results):
-                if stock_quantity is None:
-                    continue  # 处理失败的请求
+            # 使用两层循环确保每个商家的每个商品都能独立处理
+            result_index = 0
+            for merchant in config['merchants']:
+                for stock in merchant['stock_urls']:
+                    stock_quantity = results[result_index]
+                    result_index += 1
 
-                # 使用商品的标题作为唯一标识符
-                unique_identifier = stock['title']
+                    if stock_quantity is None:
+                        continue  # 处理失败的请求
 
-                previous_status = merchant_status.get(merchant['name'], {}).get(unique_identifier, {'in_stock': False})
+                    # 使用商品的标题作为唯一标识符
+                    unique_identifier = stock['title']
 
-                if stock_quantity > 0 and not previous_status['in_stock']:
-                    message_id = await send_notification(config, merchant, stock, stock_quantity)
-                    merchant_status.setdefault(merchant['name'], {})[unique_identifier] = {'in_stock': True}
-                    message_ids[unique_identifier] = message_id
-                elif stock_quantity == 0 and previous_status['in_stock']:
-                    await send_notification(config, merchant, stock, stock_quantity, message_ids.get(unique_identifier))
-                    merchant_status.setdefault(merchant['name'], {})[unique_identifier] = {'in_stock': False}
+                    previous_status = merchant_status.get(merchant['name'], {}).get(unique_identifier, {'in_stock': False})
+
+                    if stock_quantity > 0 and not previous_status['in_stock']:
+                        message_id = await send_notification(config, merchant, stock, stock_quantity)
+                        merchant_status.setdefault(merchant['name'], {})[unique_identifier] = {'in_stock': True}
+                        message_ids[unique_identifier] = message_id
+                    elif stock_quantity == 0 and previous_status['in_stock']:
+                        await send_notification(config, merchant, stock, stock_quantity, message_ids.get(unique_identifier))
+                        merchant_status.setdefault(merchant['name'], {})[unique_identifier] = {'in_stock': False}
 
             logger.info(f"Waiting for {check_interval} seconds before checking again.")
             await asyncio.sleep(check_interval)
