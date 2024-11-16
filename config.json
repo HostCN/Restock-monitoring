@@ -24,7 +24,7 @@
             "out_of_stock_text": "Out of Stock",
             "stock_urls": [
                 {
-                    "check_url": "https://www.dmit.io/cart.php?a=add&pid=100", 
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=104", 
                     "buy_url": "https://example.com/aff.php?aff=12345&pid=99",
                     "title": "示例商品 $129.99",
                     "price": "$129.99 USD/年",
@@ -32,9 +32,201 @@
                 }
             ],
             "coupon_annual": "EXAMPLEDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=104", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $1",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT2",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=104", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $2",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=91", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $3",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=92", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $4",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=93", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $5",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=94", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $6",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=95", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $7",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=96", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $8",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 CloudCone",
+            "tag": "#CloudCone - #黑五促销",
+            "out_of_stock_text": "This plan is out of stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://app.cloudcone.com.cn/vps/288/create?token=11-11-24-ssd-vps-1", 
+                    "buy_url": "https://app.cloudcone.com.cn/vps/288/create?token=11-11-24-ssd-vps-1&ref=4629",
+                    "title": "11-11-24-SSD-VPS-1",
+                    "price": "$10.99/YR",
+                    "hardware_info": "1核,512MB,7GB,2TB/月,1Gbps"
+                }
+            ],
+            "coupon_annual": "",
+            "enabled": true
+        },
+        {
+            "name": "📦 V.PS（xTom） ",
+            "tag": "电信回程CN2 GIA，联通回程9929，移动回程CMI\n      测速地址：https://v.ps/speedtest",
+            "out_of_stock_text": "unavailable",
+            "stock_urls": [
+                {
+                    "check_url": "https://vps.hosting/?cmd=cart&action=add&id=152", 
+                    "buy_url": "https://vps.hosting/?cmd=cart&action=add&affid=1751&id=145",
+                    "title": "San Jose Essential",
+                    "price": "9.95 EUR/Monthly",
+                    "hardware_info": "2 Cores, 2 GB, 30 GB, 1 TB/月+@1Gbps"
+                }
+            ],
+            "coupon_annual": "",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=99", 
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $11",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 BandwagonHost",
+            "tag": "#搬瓦工 - #洛杉矶 DC6 CN2 GIA",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=149", 
+                    "buy_url": "https://bwh81.net/aff.php?aff=55580&pid=149",
+                    "title": "The DC6 Plan VPS 限量版",
+                    "price": "$53.00 USD/年",
+                    "hardware_info": "1x Intel Xeon，1 GB，20 GB RAID-10，1000 GB/月，2.5 Gigabit"
+                }
+            ],
+            "coupon_annual": "BWHCGLUKKB",
             "enabled": true
         }
     ],
-    "check_interval": 10,
-    "cooldown_period": 0
+    "check_interval": 60,
+    "cooldown_period": 60
 }
