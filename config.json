@@ -1,6 +1,6 @@
 {
     "telegram_token": "机器人API",
-    "telegram_chat_id": "@hostzg_bbs",
+    "telegram_chat_id": "@hostzg_vps",
     "merchants": [
         {
             "name": "📦 BandwagonHost",
@@ -147,20 +147,20 @@
             "enabled": false
         },
         {
-            "name": "📦 AnotherMerchant",
-            "tag": "#AnotherMerchant - #另一商家",
+            "name": "📦 Chunkserve",
+            "tag": "#荷兰VPS - LET回复订单号得额外的vCPU或额外的1GB RAM或双倍流量或额外1个月免费：https://lowendtalk.com/discussion/199333/best-deals-9-99-yr-vps-20-99-yr-4vcpu-8gb-ram-50gb-dedicated-servers-pre-black-friday\nTest IPv4: 191.96.11.3\nTest IPv6: 2a0f:85c1:840::2\nhttps://lg.chunkserve.com/looking-glass",
             "out_of_stock_text": "Out of Stock",
             "stock_urls": [
                 {
-                    "check_url": "https://bwh81.net/cart.php?a=add&pid=96", 
-                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
-                    "title": "Another Product $8",
-                    "price": "$299.99 USD/年",
-                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                    "check_url": "https://billing.chunkserve.com/index.php?rp=/store/let-vm-special/xeon-yearly-deal-2-at-let", 
+                    "buy_url": "https://billing.chunkserve.com/index.php?rp=/store/let-vm-special",
+                    "title": "Xeon Yearly Deal 2 @ LET",
+                    "price": "$9.99USD/年",
+                    "hardware_info": "1 vCore E5-2695v4，3 GB RAM，40 GB SSD Enterprise Disk，2Gbps Network，10TB Transfer，1 IPv4，Virtualizor Panel"
                 }
             ],
-            "coupon_annual": "ANOTHERDISCOUNT",
-            "enabled": false
+            "coupon_annual": "",
+            "enabled": true
         },
         {
             "name": "📦 CloudCone",
@@ -180,11 +180,11 @@
         },
         {
             "name": "📦 V.PS（xTom） ",
-            "tag": "电信回程CN2 GIA，联通回程9929，移动回程CMI\n      测速地址：https://v.ps/speedtest",
-            "out_of_stock_text": "unavailable",
+            "tag": "电信回程CN2 GIA，联通回程9929，移动回程CMI\n数据中心测速地址：https://v.ps/speedtest",
+            "out_of_stock_text": "Tokyo Ultra plan is currently unavailable",
             "stock_urls": [
                 {
-                    "check_url": "https://vps.hosting/?cmd=cart&action=add&id=152", 
+                    "check_url": "https://vps.hosting/?cmd=cart&action=add&id=145", 
                     "buy_url": "https://vps.hosting/?cmd=cart&action=add&affid=1751&id=145",
                     "title": "San Jose Essential",
                     "price": "9.95 EUR/Monthly",
@@ -195,20 +195,20 @@
             "enabled": false
         },
         {
-            "name": "📦 AnotherMerchant",
-            "tag": "#AnotherMerchant - #另一商家",
+            "name": "📦 SpartanHost",
+            "tag": "#斯巴达 - Storage KVM VPS - Dallas",
             "out_of_stock_text": "Out of Stock",
             "stock_urls": [
                 {
-                    "check_url": "https://bwh81.net/cart.php?a=add&pid=99", 
-                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
-                    "title": "Another Product $11",
-                    "price": "$299.99 USD/年",
-                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据"
+                    "check_url": "https://billing.spartanhost.net/store/storage-kvm-vps-dallas/1000gb-kvm", 
+                    "buy_url": "https://billing.spartanhost.net/aff.php?aff=1119&pid=88",
+                    "title": "1000GB KVM",
+                    "price": "$6.00 USD/月",
+                    "hardware_info": "1024MB DDR4 ECC RAM，1 CPU vCore (2.6 GHz E5-2690v4)，1000GB Raid 10 HDD Storage，3TB bandwidth @ 10Gb/s (speed limited to 5Mb/s after allocation used)，1 IPv4, /64 IPv6，Dallas, Texas, US，Virtualizor Control Panel，Unmanaged"
                 }
             ],
-            "coupon_annual": "ANOTHERDISCOUNT",
-            "enabled": false
+            "coupon_annual": "",
+            "enabled": true
         },
         {
             "name": "📦 BandwagonHost",
@@ -227,6 +227,6 @@
             "enabled": true
         }
     ],
-    "check_interval": 60,
+    "check_interval": 30,
     "cooldown_period": 60
 }
