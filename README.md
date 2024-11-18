@@ -12,7 +12,7 @@ ps -ef | grep python
 
 常驻命令
 ```
-nohup python3 /root/monitor/商家名字/monitor.py &
+nohup python3 /root/monitor/bwh/monitor.py &
 ```
 
 临时命令
@@ -23,4 +23,8 @@ python3 /root/monitor/bwh/monitor.py
 删除文件锁
 ```
 rm /tmp/monitor_script.lock
+```
+终止monitor.py
+```
+pkill -f monitor.py
 ```
