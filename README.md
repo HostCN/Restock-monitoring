@@ -10,15 +10,9 @@ ps -ef | grep python
 
 常驻命令
 ```
-nohup python3 /root/monitor/bwh/monitor.py &
-```
-```
 nohup python3 /root/monitor/stock/monitor.py &
 ```
 临时命令
-```
-python3 /root/monitor/bwh/monitor.py
-```
 ```
 python3 /root/monitor/stock/monitor.py
 ```
