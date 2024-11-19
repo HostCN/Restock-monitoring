@@ -1,3 +1,14 @@
+常驻命令
+```
+nohup python3 /root/monitor/bwh/monitor.py &
+```
+
+临时命令
+```
+python3 /root/monitor/bwh/monitor.py
+```
+
+
 ### 解决方法 1: 使用虚拟环境
 
 1. **创建一个虚拟环境**：
