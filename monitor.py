@@ -19,12 +19,12 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',  # 日志格式
     handlers=[
         logging.StreamHandler(sys.stdout),  # 输出到控制台
-        logging.FileHandler('/root/monitor/bwh/monitor_script.log')  # 也写入到文件
+        logging.FileHandler('/root/monitor/stock/monitor_script.log')  # 也写入到文件
     ]
 )
 logger = logging.getLogger()
 
-def acquire_lock(lock_file_path='/tmp/monitor_script.lock', retries=3, wait_time=5):
+def acquire_lock(lock_file_path='/root/monitor/stock/monitor_script.lock', retries=3, wait_time=5):
     """尝试获取文件锁，若失败则重试。"""
     lock_file = open(lock_file_path, 'w')
     attempt = 0
@@ -90,7 +90,7 @@ async def check_stock(stock, out_of_stock_text):
         return None  # 如果获取失败，返回 None
     return parse_stock(html, out_of_stock_text)
 
-async def load_config(filename='/root/monitor/bwh/config.json'):
+async def load_config(filename='/root/monitor/stock/config.json'):
     """加载配置文件"""
     if not os.path.exists(filename):
         logger.error(f"Config file {filename} not found.")
@@ -160,14 +160,14 @@ async def check_all_stocks(config, merchants):
     results = await asyncio.gather(*tasks)
     return results  # 返回一个包含所有库存数量的列表
 
-async def load_stock_status(filename='/root/monitor/bwh/stock_status.json'):
+async def load_stock_status(filename='/root/monitor/stock/stock_status.json'):
     """加载之前保存的库存状态"""
     if os.path.exists(filename):
         with open(filename, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {}
 
-async def save_stock_status(stock_status, filename='/root/monitor/bwh/stock_status.json'):
+async def save_stock_status(stock_status, filename='/root/monitor/stock/stock_status.json'):
     """保存库存状态"""
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(stock_status, f, ensure_ascii=False, indent=4)
