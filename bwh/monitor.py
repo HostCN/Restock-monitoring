@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-def acquire_lock(lock_file_path='/tmp/monitor_script.lock', retries=3, wait_time=5):
+def acquire_lock(lock_file_path='/root/monitor/bwh/monitor_script.lock', retries=3, wait_time=5):
     """尝试获取文件锁，若失败则重试。"""
     lock_file = open(lock_file_path, 'w')
     attempt = 0
