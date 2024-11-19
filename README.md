@@ -19,7 +19,9 @@ nohup python3 /root/monitor/bwh/monitor.py &
 ```
 python3 /root/monitor/bwh/monitor.py
 ```
-
+```
+python3 /root/monitor/stock/monitor.py
+```
 删除文件锁
 ```
 rm /tmp/monitor_script.lock
