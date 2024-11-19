@@ -1,8 +1,6 @@
 # Restock-monitoring
 
-集成telegram，用于补货监控推送，快黑五了，速速用起来！
-
-可以把上述两个文件打包放在/root/monitor/stock/路径下，方便管理
+两个文件打包放在/root/monitor/stock/路径下
 
 
 检查进程
