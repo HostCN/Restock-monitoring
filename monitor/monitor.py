@@ -18,7 +18,7 @@ import random
 
 # 配置日志
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO,  # 设置为 DEBUG 以查看更多调试信息
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
@@ -63,30 +63,35 @@ def get_random_user_agent():
     ]
     return random.choice(user_agents)
 
-async def fetch_page_content(url, retries=3):
-    """提取整个页面内容。"""
+async def fetch_page_content(url, enable_javascript=False, retries=3):
+    """提取整个页面内容，支持动态启用/禁用 JavaScript。"""
     for attempt in range(retries):
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch(headless=True)
                 context = await browser.new_context(
                     user_agent=get_random_user_agent(),  # 随机 User-Agent
-                    java_script_enabled=True
+                    java_script_enabled=enable_javascript  # 动态启用/禁用 JavaScript
                 )
                 page = await context.new_page()
 
                 # 模拟人类行为：随机延迟
-                await page.goto(url, wait_until='domcontentloaded', timeout=120000)
+                await page.goto(url, wait_until='networkidle', timeout=120000)
                 await page.wait_for_timeout(random.randint(3000, 7000))  # 随机延迟 3-7 秒
 
                 # 模拟鼠标移动
                 await page.mouse.move(random.randint(100, 500), random.randint(100, 500))
                 await page.wait_for_timeout(random.randint(1000, 3000))  # 随机延迟 1-3 秒
 
+                # 如果启用 JavaScript，模拟点击 "Order" 按钮
+                if enable_javascript:
+                    await page.click('button:has-text("Order")')  # 假设按钮文本为 "Order"
+                    await page.wait_for_timeout(5000)  # 等待页面加载
+
                 # 提取整个页面内容
                 page_content = await page.content()
                 await browser.close()
-                logger.info(f"成功提取页面内容。URL: {url}")
+                logger.info(f"成功提取页面内容。URL: {url}, JavaScript: {'启用' if enable_javascript else '禁用'}")
                 return page_content
         except Exception as e:
             logger.warning(f"第 {attempt + 1} 次尝试失败，URL: {url}，错误: {e}")
@@ -95,32 +100,66 @@ async def fetch_page_content(url, retries=3):
                 return None
             await asyncio.sleep(5)  # 重试前等待
 
-def parse_stock(page_content, out_of_stock_text, url):
+def parse_stock(page_content, out_of_stock_text, url, enable_javascript):
     """根据页面内容解析库存信息。"""
     try:
         if page_content is None:
-            return None
+            logger.warning(f"页面内容为空。URL: {url}")
+            return False
 
-        # 检查页面内容是否包含 out_of_stock_text
-        if out_of_stock_text in page_content:
+        soup = BeautifulSoup(page_content, 'html.parser')
+
+        # 优先检查页面内容
+        if soup.find(string=lambda text: text and out_of_stock_text in text):
             logger.info(f"无库存（根据页面内容）。URL: {url}")
-            return 0
+            return False
+
+        # 如果启用 JavaScript，继续检查 errors 数组
+        if enable_javascript:
+            script_tag = soup.find_all('script', string=re.compile(r'(?:var|let|const)\s+errors\s*=\s*\['))
+            if not script_tag:
+                logger.warning(f"未找到包含 errors 数组的脚本标签。URL: {url}")
+                return True  # 假设有库存
+
+            script_content = script_tag[0].string
+            logger.debug(f"脚本内容: {script_content}")  # 调试输出
+            match = re.search(r'(?:var|let|const)\s+errors\s*=\s*(\[.*?\]);', script_content, re.DOTALL)
+            if not match:
+                logger.warning(f"未找到 errors 数组的内容。URL: {url}")
+                return True  # 假设有库存
+
+            errors_array = match.group(1)
+            try:
+                errors_list = json.loads(errors_array)  # 使用 json.loads 解析
+            except json.JSONDecodeError as e:
+                logger.error(f"解析 errors 数组时出错。URL: {url}, 错误: {e}")
+                return True  # 假设有库存
+
+            logger.debug(f"errors 数组内容: {errors_list}")
+
+            # 如果 errors 数组包含 out_of_stock_text，则无库存
+            if errors_list and any(out_of_stock_text in error for error in errors_list):
+                logger.info(f"无库存（根据 errors 数组）。URL: {url}")
+                return False
+            else:
+                logger.info(f"有库存（根据 errors 数组）。URL: {url}")
+                return True
         else:
             logger.info(f"有库存（根据页面内容）。URL: {url}")
-            return float('inf')
+            return True
     except Exception as e:
         logger.error(f"解析页面内容时出错。URL: {url}, 错误: {e}")
-        return None
+        return True  # 假设解析错误意味着有库存
 
-async def send_notification(config, merchant, stock, stock_quantity, message_id=None):
+async def send_notification(config, merchant, stock, in_stock, message_id=None):
     """发送 Telegram 通知。"""
     bot = Bot(token=config['telegram_token'])
     title = f"{merchant['name']}-{stock['title']}"
     tag = html.escape(merchant['tag'])
     price = html.escape(stock['price'])
     hardware_info = f"<a href=\"{stock['buy_url']}\">{html.escape(stock['hardware_info'])}</a>"
-    stock_info = f'🛒 <a href="{stock["buy_url"]}">库   存：{"有 - 抢购吧！" if stock_quantity > 0 else "无 - 已售罄！"}</a>'
-    buy_link = f"🔗 <s>{stock['buy_url']}</s>" if stock_quantity == 0 else f"🔗 {stock['buy_url']}"
+    stock_info = f'🛒 <a href="{stock["buy_url"]}">库   存：{"有 - 抢购吧！" if in_stock else "无 - 已售罄！"}</a>'
+    buy_link = f"🔗 <s>{stock['buy_url']}</s>" if not in_stock else f"🔗 {stock['buy_url']}"
     annual_coupon = f"🎁 优惠码：<code>{merchant['coupon_annual']}</code>" if merchant.get('coupon_annual') else ""
     coupon_section = f"\n\n{annual_coupon}\n\n" if annual_coupon else "\n\n"
 
@@ -135,7 +174,7 @@ async def send_notification(config, merchant, stock, stock_quantity, message_id=
     )
 
     try:
-        if stock_quantity > 0:
+        if in_stock:
             sent_message = await bot.send_message(
                 chat_id=config['telegram_chat_id'],
                 text=message,
@@ -189,7 +228,8 @@ async def main():
             for merchant in config['merchants']:
                 if merchant['enabled']:
                     for stock in merchant['stock_urls']:
-                        tasks.append(fetch_page_content(stock['check_url']))
+                        enable_javascript = stock.get('enable_javascript', False)  # 获取 enable_javascript 字段
+                        tasks.append(fetch_page_content(stock['check_url'], enable_javascript))
             results = await asyncio.gather(*tasks)
             result_index = 0
 
@@ -203,15 +243,15 @@ async def main():
                     if page_content is None:
                         continue
 
-                    stock_quantity = parse_stock(page_content, merchant['out_of_stock_text'], stock['check_url'])
+                    in_stock = parse_stock(page_content, merchant['out_of_stock_text'], stock['check_url'], stock.get('enable_javascript', False))
                     unique_identifier = stock['title']
-                    previous_status = stock_status.get(unique_identifier, {'in_stock': False})
+                    previous_status = stock_status.get(unique_identifier, {'in_stock': True})
 
-                    if stock_quantity > 0 and not previous_status['in_stock']:
-                        message_id = await send_notification(config, merchant, stock, stock_quantity)
+                    if in_stock and not previous_status['in_stock']:
+                        message_id = await send_notification(config, merchant, stock, in_stock)
                         stock_status[unique_identifier] = {'in_stock': True, 'message_id': message_id}
-                    elif stock_quantity == 0 and previous_status['in_stock']:
-                        await send_notification(config, merchant, stock, stock_quantity, previous_status['message_id'])
+                    elif not in_stock and previous_status['in_stock']:
+                        await send_notification(config, merchant, stock, in_stock, previous_status['message_id'])
                         stock_status[unique_identifier] = {'in_stock': False, 'message_id': previous_status['message_id']}
 
             await save_stock_status(stock_status)
