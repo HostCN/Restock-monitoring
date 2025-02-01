@@ -1,0 +1,178 @@
+{
+    "telegram_token": "你的telegram_token",
+    "telegram_chat_id": "你的telegram_chat_id",
+    "check_interval": 30,
+    "cooldown_period": 60,
+    "merchants": [
+        {
+            "name": "📦 BandwagonHost",
+            "tag": "#BandwagonHost - #搬瓦工",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=87",
+                    "buy_url": "https://bwh81.net/aff.php?aff=55580&pid=87",
+                    "title": "搬瓦工 CN2 GIA-E $169.99",
+                    "price": "$169.99 USD/年",
+                    "hardware_info": "2核,1GB,20GB,1000GB/月,2.5Gbps,DC6 CN2 GIA-E",
+                    "enable_javascript": false
+                }
+            ],
+            "coupon_annual": "BWHCGLUKKB",
+            "enabled": true
+        },
+        {
+            "name": "📦 DMIT",
+            "tag": "#DMIT - #示例商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://www.dmit.io/cart.php?a=add&pid=231",
+                    "buy_url": "https://www.dmit.io/aff.php?aff=785&pid=231",
+                    "title": "示例商品 $129.99",
+                    "price": "$129.99 USD/年",
+                    "hardware_info": "1核,512MB,10GB,500GB/月,1Gbps,DC2 示例数据",
+                    "enable_javascript": false
+                }
+            ],
+            "coupon_annual": "EXAMPLEDISCOUNT",
+            "enabled": true
+        },
+        {
+            "name": "📦 V.PS（xTom） ",
+            "tag": "电信回程CN2 GIA，联通回程9929，移动回程CMI\n数据中心测速地址：https://v.ps/speedtest",
+            "out_of_stock_text": "currently unavailable",
+            "stock_urls": [
+                {
+                    "check_url": "https://vps.hosting/?cmd=cart&action=add&id=144",
+                    "buy_url": "https://vps.hosting/?cmd=cart&action=add&affid=1751&id=145",
+                    "title": "San Jose Essential",
+                    "price": "9.95 EUR/Monthly",
+                    "hardware_info": "2 Cores, 2 GB, 30 GB, 1 TB/月+@1Gbps",
+                    "enable_javascript": true
+                }
+            ],
+            "coupon_annual": "",
+            "enabled": true
+        },
+        {
+            "name": "📦 ClawCloud",
+            "tag": "长期优惠，永久循环折扣。每日11点更新库存，每日限10台。可选地区：香港 / 日本 / 新加坡，Looking Glass：https://claw.vpssk.com/looking-glass",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://claw.cloud/store/promotion/2c-1g-40g-1t-flash",
+                    "buy_url": "https://clawcloudsingaporeprivatelimited.sjv.io/JKJN0E",
+                    "title": "中国网络优化-2C/1G/40G/1T",
+                    "price": "$4.2/月",
+                    "hardware_info": "2 核处理器，1 GiB内存，40 GiB存储，1 TB流量，1 Gbps峰值带宽，1 IPv4 / 1 IPv6 IP",
+                    "enable_javascript": false
+                }
+            ],
+            "coupon_annual": "4CLAWflash",
+            "enabled": false
+        },
+        {
+            "name": "📦 ClawCloud",
+            "tag": "首年优惠，优惠码仅限使用一次。每日23点更新库存，每日限100台。可选地区：香港 / 日本 / 新加坡 / 德国 / 美东 / 美西，Looking Glass：https://claw.vpssk.com/looking-glass",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://claw.cloud/store/promotion/1c-1g-20g-500g-flash",
+                    "buy_url": "https://clawcloudsingaporeprivatelimited.sjv.io/9LAR3e",
+                    "title": "CLOUD VPS-1C/1G/20G/0.5T",
+                    "price": "$7/首年",
+                    "hardware_info": "1 核处理器，1 GB内存，20 GiB存储，500 GB流量，200 Mbps峰值带宽，1 IPv4 / 1 IPv6 IP",
+                    "enable_javascript": false
+                }
+            ],
+            "coupon_annual": "7CLAWflash",
+            "enabled": false
+        },
+        {
+            "name": "📦 AnotherMerchant",
+            "tag": "#AnotherMerchant - #另一商家",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=92",
+                    "buy_url": "https://anothermerchant.com/aff.php?aff=77777&pid=200",
+                    "title": "Another Product $4",
+                    "price": "$299.99 USD/年",
+                    "hardware_info": "4核,4GB,80GB,2000GB/月,3Gbps,AnotherMerchant 数据",
+                    "enable_javascript": true
+                }
+            ],
+            "coupon_annual": "ANOTHERDISCOUNT",
+            "enabled": false
+        },
+        {
+            "name": "📦 Chunkserve",
+            "tag": "#荷兰VPS - LET回复订单号得额外的vCPU或额外的1GB RAM或双倍流量或额外1个月免费：https://lowendtalk.com/discussion/199333/best-deals-9-99-yr-vps-20-99-yr-4vcpu-8gb-ram-50gb-dedicated-servers-pre-black-friday\nTest IPv4: 191.96.11.3\nTest IPv6: 2a0f:85c1:840::2\nhttps://lg.chunkserve.com/looking-glass",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://billing.chunkserve.com/index.php?rp=/store/let-vm-special/xeon-yearly-deal-2-at-let",
+                    "buy_url": "https://billing.chunkserve.com/index.php?rp=/store/let-vm-special",
+                    "title": "Xeon Yearly Deal 2 @ LET",
+                    "price": "$9.99USD/年",
+                    "hardware_info": "1 vCore E5-2695v4，3 GB RAM，40 GB SSD Enterprise Disk，2Gbps Network，10TB Transfer，1 IPv4，Virtualizor Panel",
+                    "enable_javascript": false
+                }
+            ],
+            "coupon_annual": "",
+            "enabled": false
+        },
+        {
+            "name": "📦 CloudCone",
+            "tag": "#CloudCone - #黑五促销",
+            "out_of_stock_text": "This plan is out of stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://app.cloudcone.com.cn/vps/288/create?token=11-11-24-ssd-vps-1",
+                    "buy_url": "https://app.cloudcone.com.cn/vps/288/create?token=11-11-24-ssd-vps-1&ref=4629",
+                    "title": "11-11-24-SSD-VPS-1",
+                    "price": "$10.99/YR",
+                    "hardware_info": "1核,512MB,7GB,2TB/月,1Gbps",
+                    "enable_javascript": true
+                }
+            ],
+            "coupon_annual": "",
+            "enabled": false
+        },
+        {
+            "name": "📦 SpartanHost",
+            "tag": "#斯巴达 - Storage KVM VPS - Dallas",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://billing.spartanhost.net/store/storage-kvm-vps-dallas/1000gb-kvm",
+                    "buy_url": "https://billing.spartanhost.net/aff.php?aff=1119&pid=88",
+                    "title": "1000GB KVM",
+                    "price": "$6.00 USD/月",
+                    "hardware_info": "1024MB DDR4 ECC RAM，1 CPU vCore (2.6 GHz E5-2690v4)，1000GB Raid 10 HDD Storage，3TB bandwidth @ 10Gb/s (speed limited to 5Mb/s after allocation used)，1 IPv4, /64 IPv6，Dallas, Texas, US，Virtualizor Control Panel，Unmanaged",
+                    "enable_javascript": false
+                }
+            ],
+            "coupon_annual": "",
+            "enabled": false
+        },
+        {
+            "name": "📦 BandwagonHost",
+            "tag": "#搬瓦工 - #洛杉矶 DC6 CN2 GIA",
+            "out_of_stock_text": "Out of Stock",
+            "stock_urls": [
+                {
+                    "check_url": "https://bwh81.net/cart.php?a=add&pid=149",
+                    "buy_url": "https://bwh81.net/aff.php?aff=55580&pid=149",
+                    "title": "The DC6 Plan VPS 限量版",
+                    "price": "$53.00 USD/年",
+                    "hardware_info": "1x Intel Xeon，1 GB，20 GB RAID-10，1000 GB/月，2.5 Gigabit",
+                    "enable_javascript": true
+                }
+            ],
+            "coupon_annual": "BWHCGLUKKB",
+            "enabled": false
+        }
+    ]
+}
