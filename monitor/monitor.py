@@ -63,7 +63,7 @@ def get_random_user_agent():
     ]
     return random.choice(user_agents)
 
-async def fetch_page_content(url, enable_javascript=False, retries=3):
+async def fetch_page_content(url, enable_javascript=False, retries=3, expected_title=None):
     """提取整个页面内容，支持动态启用/禁用 JavaScript。"""
     for attempt in range(retries):
         try:
@@ -76,7 +76,12 @@ async def fetch_page_content(url, enable_javascript=False, retries=3):
                 page = await context.new_page()
 
                 # 模拟人类行为：随机延迟
-                await page.goto(url, wait_until='networkidle', timeout=120000)
+                response = await page.goto(url, wait_until='networkidle', timeout=120000)
+                if response.status != 200:
+                    logger.warning(f"HTTP 请求失败，状态码: {response.status}。URL: {url}")
+                    await browser.close()
+                    return None
+
                 await page.wait_for_timeout(random.randint(3000, 7000))  # 随机延迟 3-7 秒
 
                 # 模拟鼠标移动
@@ -90,6 +95,16 @@ async def fetch_page_content(url, enable_javascript=False, retries=3):
 
                 # 提取整个页面内容
                 page_content = await page.content()
+
+                # 检查 <title> 标签内容
+                if expected_title:
+                    soup = BeautifulSoup(page_content, 'html.parser')
+                    title_tag = soup.find('title')
+                    if not title_tag or expected_title not in title_tag.text:
+                        logger.warning(f"页面标题不符合预期。URL: {url}")
+                        await browser.close()
+                        return None
+
                 await browser.close()
                 logger.info(f"成功提取页面内容。URL: {url}, JavaScript: {'启用' if enable_javascript else '禁用'}")
                 return page_content
@@ -204,16 +219,35 @@ async def load_config(filename='/root/monitor/config.json'):
         return json.load(f)
 
 async def load_stock_status(filename='/root/monitor/stock_status.json'):
-    """加载库存状态。"""
+    """加载库存状态。如果文件不存在，自动初始化。"""
     if os.path.exists(filename):
         with open(filename, 'r', encoding='utf-8') as f:
             return json.load(f)
-    return {}
+    else:
+        # Initialize an empty dictionary for stock status
+        return {}
 
 async def save_stock_status(stock_status, filename='/root/monitor/stock_status.json'):
-    """保存库存状态。"""
+    """保存库存状态，包括最后检查时间。"""
+    for unique_identifier, status in stock_status.items():
+        # Ensure that 'last_check' is always updated to the current time (timestamp)
+        status['last_check'] = int(time.time())  # Store timestamp for the last check
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(stock_status, f, ensure_ascii=False, indent=4)
+
+async def initialize_stock_status(config, stock_status):
+    """初始化库存状态，如果之前没有状态则生成默认状态。"""
+    for merchant in config['merchants']:
+        for stock in merchant['stock_urls']:
+            unique_identifier = stock['title']
+            if unique_identifier not in stock_status:
+                # Initialize stock entry with default values
+                stock_status[unique_identifier] = {
+                    'in_stock': True,
+                    'message_id': None,
+                    'last_check': None  # First time check, no last_check yet
+                }
+    return stock_status
 
 async def main():
     """主函数。"""
@@ -224,12 +258,16 @@ async def main():
             config = await load_config()  # 每次循环重新加载配置文件
             stock_status = await load_stock_status()
 
+            # Initialize stock status with default values if not present
+            stock_status = await initialize_stock_status(config, stock_status)
+
             tasks = []
             for merchant in config['merchants']:
                 if merchant['enabled']:
                     for stock in merchant['stock_urls']:
-                        enable_javascript = stock.get('enable_javascript', False)  # 获取 enable_javascript 字段
-                        tasks.append(fetch_page_content(stock['check_url'], enable_javascript))
+                        enable_javascript = stock.get('enable_javascript', False)
+                        expected_title = stock.get('expected_title', None)
+                        tasks.append(fetch_page_content(stock['check_url'], enable_javascript, expected_title=expected_title))
             results = await asyncio.gather(*tasks)
             result_index = 0
 
@@ -249,10 +287,10 @@ async def main():
 
                     if in_stock and not previous_status['in_stock']:
                         message_id = await send_notification(config, merchant, stock, in_stock)
-                        stock_status[unique_identifier] = {'in_stock': True, 'message_id': message_id}
+                        stock_status[unique_identifier] = {'in_stock': True, 'message_id': message_id, 'last_check': int(time.time())}
                     elif not in_stock and previous_status['in_stock']:
                         await send_notification(config, merchant, stock, in_stock, previous_status['message_id'])
-                        stock_status[unique_identifier] = {'in_stock': False, 'message_id': previous_status['message_id']}
+                        stock_status[unique_identifier] = {'in_stock': False, 'message_id': previous_status['message_id'], 'last_check': int(time.time())}
 
             await save_stock_status(stock_status)
             await asyncio.sleep(config.get('check_interval', 600))
