@@ -44,23 +44,29 @@ def escape_markdown(text):
     """不进行任何转义操作，直接返回文本。"""
     return text
 
-async def fetch_html(url, retries=3):
+async def fetch_html(url, expected_title=None, retries=3):
     scraper = cfscrape.create_scraper()
     for attempt in range(retries):
         try:
             response = scraper.get(url)
-            if response.status_code == 200:
-                if not response.text.strip():  # 检查是否为空页面
-                    logger.warning(f"Empty page returned from {url}")
-                    return None
-                logger.info(f"Successfully fetched URL: {url}")
-                return response.text
-            else:
-                logger.warning(f"Received status code {response.status_code} for URL {url}")
+            if response.status_code != 200:
+                logger.warning(f"URL {url} 返回了非200状态码 {response.status_code}，跳过该页面。")
+                return None  # 如果状态码不是 200，跳过该页面
+            if not response.text.strip():  # 检查页面是否为空
+                logger.warning(f"URL {url} 返回了空页面，跳过。")
+                return None
+            if expected_title:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                title = soup.title.string if soup.title else None
+                if title and expected_title.lower() not in title.lower():
+                    logger.warning(f"URL {url} 标题不匹配。期望包含：{expected_title}，实际：{title}，跳过该页面。")
+                    return None  # 如果标题不包含期望的部分文本，跳过该页面
+            logger.info(f"成功获取 URL: {url}")
+            return response.text
         except Exception as e:
-            logger.error(f"Error fetching {url}: {e} (Attempt {attempt + 1} of {retries})")
-            await asyncio.sleep(2)  # 重试等待时间
-    logger.error(f"Failed to fetch URL after {retries} attempts: {url}")
+            logger.error(f"获取 {url} 时出错: {e} (尝试 {attempt + 1} 次，共 {retries} 次)")
+            await asyncio.sleep(2)  # 等待重试
+    logger.error(f"获取 URL {url} 失败，已尝试 {retries} 次。")
     return None
 
 def parse_stock(html, out_of_stock_text):
@@ -81,13 +87,13 @@ def parse_stock(html, out_of_stock_text):
         logger.error(f"Error parsing HTML: {e}")
         return None  # 返回 None 表示解析失败
 
-async def check_stock(stock, out_of_stock_text):
+async def check_stock(stock, out_of_stock_text, expected_title=None):
     """检查商品库存"""
     url = stock['check_url']
-    html = await fetch_html(url)
+    html = await fetch_html(url, expected_title=expected_title)
     if html is None:
-        logger.warning(f"Skipping URL {url} due to repeated errors.")
-        return None  # 如果获取失败，返回 None
+        logger.warning(f"跳过 URL {url}，因获取失败或标题不匹配。")
+        return None  # 如果获取失败或标题不匹配，跳过该页面
     return parse_stock(html, out_of_stock_text)
 
 async def load_config(filename='/root/monitor/stock/config.json'):
@@ -156,7 +162,7 @@ async def check_all_stocks(config, merchants):
     for merchant in merchants:
         if merchant['enabled']:  # 只检查启用的商家
             for stock in merchant['stock_urls']:
-                tasks.append(check_stock(stock, merchant['out_of_stock_text']))
+                tasks.append(check_stock(stock, merchant['out_of_stock_text'], stock.get('expected_title')))
     results = await asyncio.gather(*tasks)
     return results  # 返回一个包含所有库存数量的列表
 
