@@ -1,191 +1,203 @@
-Here's a detailed `README.md` for your stock monitoring script:
+Here’s the updated `README.md` with sections on pausing the script and deleting the lock file:
 
 ---
 
-# Stock Monitor Script
+# Stock Monitoring Script
 
-This Python script monitors the stock status of various products across multiple merchants, checking their availability at regular intervals. It sends notifications to a Telegram chat whenever the stock status changes, such as when a product goes from "out of stock" to "in stock" or vice versa.
+This script monitors the stock availability of products from various merchants. It uses Telegram notifications to alert when a product is in stock or out of stock.
 
 ## Features
 
-- **Product Stock Monitoring**: Monitors the stock levels of products from various merchants by checking specific URLs.
-- **Telegram Notifications**: Sends real-time updates about product availability to a Telegram chat, including product details, stock quantity, and discounts.
-- **Product Locking**: Prevents the script from running multiple instances simultaneously by acquiring a lock on a file.
-- **Retry Mechanism**: Automatically retries failed requests up to a defined number of attempts to ensure stable operation.
-- **Configuration Support**: Allows for easy configuration of merchants, products, and notification settings through a JSON file.
+- **Product Monitoring**: Monitors multiple products from different merchants.
+- **Telegram Notifications**: Sends notifications to a specified Telegram channel when a product's stock status changes.
+- **File Locking**: Prevents multiple instances of the script from running at the same time.
+- **Customizable Configuration**: Easily configure the merchants, stock URLs, check intervals, and more via a JSON configuration file.
+- **Error Handling**: Automatically retries if there is an issue fetching the product page or parsing the stock information.
 
-## Prerequisites
+## Requirements
 
-- **Python 3.6+**
-- **Required Libraries**:
-  - `cfscrape` (for bypassing Cloudflare protection)
-  - `beautifulsoup4` (for HTML parsing)
-  - `requests` (for HTTP requests)
-  - `python-telegram-bot` (for sending Telegram messages)
-  - `flask` (for HTML escaping)
-  - `fcntl` (for file locking)
+- Python 3.x
+- `cfscrape`: For bypassing Cloudflare protection.
+- `beautifulsoup4`: For parsing HTML content.
+- `telegram`: For sending notifications to Telegram.
+- `json`, `os`, `re`, `time`: Standard Python libraries used for file handling, regular expressions, and timing.
 
-To install the required dependencies, run:
+### Install Dependencies
+
+Install the required Python libraries:
 
 ```bash
-pip3 install cfscrape beautifulsoup4 python-telegram-bot
+pip install cfscrape beautifulsoup4 python-telegram-bot
 ```
+
+## Setup
+
+1. **Clone the repository** (if it's a Git repository):
+    ```bash
+    git clone <repo-url>
+    cd <repo-directory>
+    ```
+
+2. **Create a configuration file**: You need to create a `config.json` file to define the merchants, stock URLs, check intervals, and your Telegram bot token.
+
+    Example `config.json`:
+    ```json
+    {
+        "telegram_token": "<Your-Telegram-Bot-Token>",
+        "telegram_chat_id": "<Your-Telegram-Chat-ID>",
+        "check_interval": 600,
+        "merchants": [
+            {
+                "name": "BandwagonHost",
+                "tag": "#BandwagonHost",
+                "enabled": true,
+                "coupon_annual": "BWHCGLUKKB",
+                "stock_urls": [
+                    {
+                        "title": "搬瓦工 CN2 GIA-E",
+                        "check_url": "https://bwh81.net/cart.php?a=add&pid=104",
+                        "buy_url": "https://bwh81.net/aff.php?aff=55580&pid=87",
+                        "price": "$169.99",
+                        "hardware_info": "2核, 1GB, 20GB, 1000GB/月, 2.5Gbps, DC6 CN2 GIA-E",
+                        "out_of_stock_text": "currently unavailable"
+                    }
+                ]
+            }
+        ]
+    }
+    ```
+
+    - Replace `<Your-Telegram-Bot-Token>` and `<Your-Telegram-Chat-ID>` with your actual Telegram bot token and chat ID.
+    - You can customize the merchants and product details as needed.
+
+3. **Ensure you have a lock file**: The script will create a lock file (`monitor_script.lock`) to prevent multiple instances from running at once.
+
+    If the script is stopped or interrupted, you may need to manually delete this lock file to resume execution:
+    ```bash
+    rm /root/monitor/stock/monitor_script.lock
+    ```
+
+## Running the Script
+
+To run the script, use the following command:
+
+```bash
+python3 /root/monitor/stock/monitor.py
+```
+
+This will start the script, and it will begin checking the stock status of all listed products at the interval defined in the configuration file (`check_interval`).
+
+## Pausing the Script
+
+If you want to pause the script temporarily, you can use one of the following methods:
+
+### 1. **Pause with `Ctrl + Z` (Terminal)**
+   - If you're running the script in the terminal, you can press `Ctrl + Z` to suspend it. This will stop the script temporarily and move it to the background.
+
+### 2. **Pause the Script Using the `kill` Command**
+   - You can suspend the script process by sending a `SIGSTOP` signal to it. First, find the process ID (PID) of the script:
+     ```bash
+     ps aux | grep monitor.py
+     ```
+   - Then, use the `kill` command to suspend it:
+     ```bash
+     kill -SIGSTOP <PID>
+     ```
+   - To resume the script, use the `SIGCONT` signal:
+     ```bash
+     kill -SIGCONT <PID>
+     ```
+
+### 3. **Stop the Script Using `systemd` or `supervisord`**
+   - If the script is managed by `systemd` or `supervisord`, you can stop it using the following commands:
+     ```bash
+     sudo systemctl stop <your-service-name>
+     ```
+     or
+     ```bash
+     supervisorctl stop <your-program-name>
+     ```
+
+## Deleting the Lock File
+
+The script uses a lock file (`monitor_script.lock`) to prevent multiple instances from running simultaneously. If the script is stopped unexpectedly or you need to start it again, you may need to manually remove the lock file:
+
+```bash
+rm /root/monitor/stock/monitor_script.lock
+```
+
+## Script Workflow
+
+1. **Acquiring File Lock**: The script ensures only one instance is running at a time by creating a file lock (`monitor_script.lock`).
+2. **Fetching Product Information**: The script retrieves the HTML content of the product page.
+3. **Parsing Stock Information**: It looks for the stock availability on the product page and checks if the product is in or out of stock.
+4. **Sending Notifications**: If the stock status changes (e.g., from out of stock to in stock), the script sends a notification to a Telegram channel. The message contains product details, price, hardware info, and a link to purchase.
+5. **Error Handling**: The script automatically retries fetching the page if there is a failure (up to 3 attempts by default).
 
 ## File Structure
 
 ```
 /root/monitor/stock/
 │
-├── config.json           # Configuration file for merchants and stock settings
-├── stock_status.json     # Stores the current stock status of products
-├── monitor.py            # Main script for monitoring stock
-├── monitor_script.lock   # Lock file to prevent multiple script instances
-├── monitor_script.log    # Log file for script output and error messages
+├── monitor.py          # Main script to monitor stock availability
+├── config.json         # Configuration file for merchants and product details
+├── monitor_script.lock # Lock file to prevent multiple script instances
+├── stock_status.json   # Stores the current stock status of products
+└── monitor_script.log  # Log file for script output and errors
 ```
 
-### Configuration File (`config.json`)
+## Logging
 
-This JSON file contains the configuration for each merchant and the products you wish to monitor. You can customize the merchant's name, stock URLs, product details, and more.
+Logs are generated for every run of the script and stored in `monitor_script.log`. The log includes:
 
-#### Example `config.json`
+- Time of execution
+- Information on the product stock status
+- Errors or issues with fetching/parsing data
 
-```json
-{
-    "telegram_token": "your_telegram_bot_token",
-    "telegram_chat_id": "@your_chat_id",
-    "check_interval": 600,
-    "merchants": [
-        {
-            "name": "BandwagonHost",
-            "tag": "#BandwagonHost",
-            "enabled": true,
-            "coupon_annual": "BWHCGLUKKB",
-            "stock_urls": [
-                {
-                    "title": "Product 1",
-                    "check_url": "https://example.com/product1",
-                    "buy_url": "https://example.com/product1/buy",
-                    "price": "$169.99",
-                    "hardware_info": "2 cores, 1GB RAM, 20GB SSD, 1Gbps",
-                    "expected_title": "BandwagonHost Product 1",
-                    "out_of_stock_text": "currently unavailable"
-                }
-            ]
-        },
-        {
-            "name": "DMIT",
-            "tag": "#DMIT",
-            "enabled": false,
-            "stock_urls": [
-                {
-                    "title": "Product 2",
-                    "check_url": "https://example.com/product2",
-                    "buy_url": "https://example.com/product2/buy",
-                    "price": "$129.99",
-                    "hardware_info": "1 core, 512MB RAM, 10GB SSD, 1Gbps",
-                    "out_of_stock_text": "currently unavailable"
-                }
-            ]
-        }
-    ]
-}
+## Notifications
+
+- When a product is **in stock**, a message is sent to the specified Telegram channel with details about the product.
+- When a product is **out of stock**, the message is updated to show that the product is sold out.
+
+The message includes:
+- Product name, price, and configuration
+- A link to the product's purchase page
+- A coupon code (if available)
+
+Example Telegram message:
 ```
+💰 价  格: <b>$169.99</b>
 
-### Lock File (`monitor_script.lock`)
+📜 配  置：<a href="https://bwh81.net/aff.php?aff=55580&pid=87">2核, 1GB, 20GB, 1000GB/月, 2.5Gbps, DC6 CN2 GIA-E</a>
 
-This file is used to ensure that only one instance of the script is running at any given time. If the script is already running, it will prevent another instance from starting.
+ℹ️ #BandwagonHost
 
-### Stock Status File (`stock_status.json`)
+🛒 <a href="https://bwh81.net/cart.php?a=add&pid=104">库   存：有 - 抢购吧！</a>
 
-This file stores the previous stock status of the products. It allows the script to compare the current stock status with the previous one and detect if there have been any changes.
+🎁 优惠码：<code>BWHCGLUKKB</code>
 
-#### Example `stock_status.json`
-
-```json
-{
-    "Product 1": {
-        "in_stock": true,
-        "message_id": 123456789
-    },
-    "Product 2": {
-        "in_stock": false,
-        "message_id": 987654321
-    }
-}
+🔗 https://bwh81.net/aff.php?aff=55580&pid=87
 ```
-
-## Usage
-
-### 1. **Configure the script**:
-
-Edit the `config.json` file with your merchant details, product URLs, and Telegram bot information. Make sure to replace placeholders such as `your_telegram_bot_token` and `@your_chat_id` with your actual bot token and chat ID.
-
-### 2. **Run the script**:
-
-Once the configuration is complete, run the script using the following command:
-
-```bash
-python3 /root/monitor/stock/monitor.py
-```
-
-The script will begin monitoring the specified stock URLs at the interval defined in `config.json` (`check_interval` in seconds). It will check for stock changes and send notifications to your Telegram chat.
-
-### 3. **Receive Notifications**:
-
-When the stock status of a product changes (from "out of stock" to "in stock" or vice versa), the script will send a Telegram notification with the product details, price, configuration, and available stock. If the stock goes out of stock, the script will update the existing notification.
-
-### 4. **Check logs**:
-
-Logs will be saved to `monitor_script.log`. You can view these logs to troubleshoot issues, such as HTTP request failures or parsing errors.
-
-## How It Works
-
-### Key Functions
-
-- **acquire_lock()**: Ensures that only one instance of the script is running at any time. If the script is already running, it will not start another instance.
-- **escape_markdown()**: Escapes Markdown characters to ensure that text is displayed correctly in the Telegram notification.
-- **fetch_html()**: Fetches the HTML content of a URL and handles retries in case of failures.
-- **parse_stock()**: Extracts the stock quantity from the HTML page. It can also check for out-of-stock messages based on a customizable text.
-- **send_notification()**: Sends a stock update to a Telegram chat. It includes details like price, configuration, stock availability, and a purchase link.
-- **check_all_stocks()**: Loops through all merchants and products to check the stock status.
-- **load_stock_status()**: Loads the previous stock status from `stock_status.json` to compare with the current stock.
-- **save_stock_status()**: Saves the current stock status to `stock_status.json` after each check.
-
-### Error Handling
-
-- **HTTP Request Failures**: If the script cannot fetch a page (e.g., due to network issues or non-existent pages), it will retry a specified number of times before skipping that product.
-- **Stock Parsing Errors**: If the script encounters errors while parsing the stock information (e.g., if the stock information cannot be found), it will log the error and skip that product.
-- **Telegram Notification Issues**: If there is an issue with sending or editing a message on Telegram, the error will be logged.
-
-## Configuration Options
-
-### 1. **check_interval**:
-The interval in seconds between each stock check. The default is 600 seconds (10 minutes).
-
-### 2. **merchants**:
-A list of merchants you want to monitor. Each merchant can have multiple products to monitor.
-
-- **enabled**: A flag to enable or disable monitoring for this merchant.
-- **coupon_annual**: Optional. A coupon code to include in the notification for discounts.
-- **stock_urls**: A list of products to monitor.
-  - **title**: The product's name.
-  - **check_url**: The URL where the product's stock status is checked.
-  - **buy_url**: The URL to purchase the product.
-  - **price**: The price of the product.
-  - **hardware_info**: Details about the product's hardware (for example, RAM, disk size, etc.).
-  - **expected_title**: Optional. The expected title of the webpage for validation.
-  - **out_of_stock_text**: The text that appears on the product page when it is out of stock.
 
 ## Troubleshooting
 
-- **Script is not running**: If the script is not running, make sure no other instance of the script is already running (check the lock file).
-- **No notifications**: Ensure that the Telegram bot token and chat ID are correct in the `config.json` file. You can also check the Telegram API logs for any errors.
-- **Stock information not found**: Ensure that the HTML parsing logic matches the structure of the product page. If the page layout changes, you may need to adjust the parsing code.
+- **Problem**: The script isn't running.
+  - **Solution**: Ensure that there is no other instance running by checking for the lock file. Delete it if necessary (`rm /root/monitor/stock/monitor_script.lock`).
+
+- **Problem**: The script isn't sending notifications.
+  - **Solution**: Check the Telegram bot token and chat ID in the `config.json` file.
+
+- **Problem**: The stock information is incorrect.
+  - **Solution**: The parsing logic may need to be adjusted depending on the format of the product page. Update the parsing logic in `parse_stock()`.
+
+## Contributing
+
+Feel free to open issues or submit pull requests if you encounter any bugs or would like to add new features.
 
 ## License
 
-This script is open-source and licensed under the MIT License. You are free to use, modify, and distribute it as needed.
+This project is open-source and available under the MIT License.
 
 ---
 
-This `README.md` should provide all necessary information for setting up, configuring, and using your stock monitor script. Let me know if you need any additional details or adjustments!
+Now the README includes instructions for pausing the script and handling the lock file. Let me know if you'd like to adjust anything else!
